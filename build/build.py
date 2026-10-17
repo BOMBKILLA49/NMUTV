@@ -292,11 +292,19 @@ def model_chips(brand=None):
 
 
 OWNER_BLURB = (
-    "NM UTV is owned by <strong>Dillon Zimmerman</strong>, a former member of the "
-    "<strong>factory Can-Am ATV racing team</strong> with a long history in the powersports industry. "
+    "NM UTV proudly serves the entire state of New Mexico, owned by a former member of the "
+    "<strong>factory Can-Am ATV racing team</strong>, "
+    '<a href="https://www.knfilters.eu/gr/blog/kn-s-can-am-motoworks-finishes-first-third-and-fifth-in-worcs-season-opener/" '
+    'target="_blank" rel="noopener"><strong>Dillon Zimmerman</strong></a> '
+    '(<a href="https://dirtwheelsmag.com/can-ams-dillon-zimmerman-3rd-at-worcs-opener-in-atv-pro-class/" '
+    'target="_blank" rel="noopener">see his WORCS ATV Pro results</a>), '
+    "with a long history in the powersports industry. "
     "That racing background shows up in how we work: we know how these machines are built, how they fail, "
     "and how to make them last. Our mechanics are certified and have been working on side-by-sides for years, "
-    "our turnaround times are quick, and our prices are fair."
+    "our turnaround times are quick, and our prices are very competitive. "
+    "Over the years, we&rsquo;ve seen how dealerships and other shops take advantage of customers, and "
+    "we&rsquo;re here to change that. We&rsquo;re bringing New Mexico a UTV repair source that delivers a level "
+    "of honesty, quality, and expertise the state has never experienced before."
 )
 
 

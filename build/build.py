@@ -78,7 +78,7 @@ def business_schema():
         "url": DOMAIN + "/",
         "telephone": TEL,
         "email": EMAIL,
-        "image": DOMAIN + "/assets/og-image.png",
+        "image": [DOMAIN + "/assets/shop-hero.jpg", DOMAIN + "/assets/og-image.png"],
         "logo": DOMAIN + "/assets/logo-large.png",
         "address": {
             "@type": "PostalAddress",
@@ -145,7 +145,7 @@ def city_url(name):
     return f"/utv-repair/{slugify(name)}-nm/"
 
 
-def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website"):
+def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website", head_extra=""):
     url = DOMAIN + "/" + (path[: -len("index.html")] if path.endswith("index.html") else path)
     schema_tags = "".join(jsonld(s) for s in schemas)
     top_cities = "".join(f'<li><a href="{city_url(c)}">{c} UTV Repair</a></li>' for c in TOP_CITY_NAMES)
@@ -178,7 +178,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css?v={TODAY.replace('-', '')}">
-{schema_tags}
+{head_extra}{schema_tags}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -242,8 +242,8 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
     write(path, html, priority)
 
 
-def hero(h1, lead, eyebrow="Socorro, NM · Serving all of New Mexico"):
-    return f"""<section class="hero">
+def hero(h1, lead, eyebrow="Socorro, NM · Serving all of New Mexico", cls=""):
+    return f"""<section class="hero{(" " + cls) if cls else ""}">
   <div class="wrap">
     <p class="eyebrow">{eyebrow}</p>
     <h1>{h1}</h1>
@@ -555,7 +555,8 @@ def build_home():
         f'<h3>{escape(m["name"])}</h3></a>' for m in MODELS
     )
     body = f"""{hero("UTV &amp; Side-by-Side Repair in Socorro, New Mexico",
-      "Polaris RZR, Can-Am X3, Ranger, Defender, Talon and more. Certified mechanics, quick turnaround, great prices, and pickup and delivery anywhere in New Mexico.")}
+      "Polaris RZR, Can-Am X3, Ranger, Defender, Talon and more. Certified mechanics, quick turnaround, great prices, and pickup and delivery anywhere in New Mexico.",
+      cls="hero-photo")}
 <section class="section">
   <div class="wrap split">
     <div class="prose">
@@ -593,6 +594,7 @@ def build_home():
   <div class="wrap">
     <h2>Visit the shop</h2>
     <p class="sub">{ADDR_LINE} · <a href="tel:{TEL}">{PHONE}</a></p>
+    <picture><source srcset="/assets/shop-hero-sm.webp 900w, /assets/shop-hero.webp 1854w" sizes="(max-width: 1160px) 100vw, 1128px" type="image/webp"><img class="shop-photo" src="/assets/shop-hero.jpg" srcset="/assets/shop-hero-sm.jpg 900w, /assets/shop-hero.jpg 1854w" sizes="(max-width: 1160px) 100vw, 1128px" width="1854" height="848" loading="lazy" alt="NM UTV shop storefront at 1261 Frontage Rd NW in Socorro, New Mexico, with side-by-sides parked out front"></picture>
     <div class="map"><iframe title="NM UTV location map" src="{MAP_EMBED}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
   </div>
 </section>
@@ -601,7 +603,9 @@ def build_home():
          f"Socorro, NM UTV & side-by-side repair shop. Polaris RZR, Can-Am X3, Ranger, Defender & more. Engine work, suspension, belts, tires, crash repair. Statewide pickup & delivery. {PHONE}",
          body, schemas=[business_schema(), faq_schema(faqs),
                         {"@context": "https://schema.org", "@type": "WebSite", "name": SITE["name"], "url": DOMAIN + "/"}],
-         priority="1.0")
+         priority="1.0",
+         head_extra='<link rel="preload" as="image" type="image/webp" href="/assets/shop-hero.webp" media="(min-width: 901px)">\n'
+                    '<link rel="preload" as="image" type="image/webp" href="/assets/shop-hero-sm.webp" media="(max-width: 900px)">\n')
 
 
 def build_areas_hub():

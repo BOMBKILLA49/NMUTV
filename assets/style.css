@@ -49,6 +49,16 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
 
 /* hero */
 .hero { background: radial-gradient(ellipse 70% 90% at 100% 100%, rgba(225,6,0,.45), transparent 70%), linear-gradient(180deg, #0a0a0b 0%, #141518 100%), repeating-linear-gradient(-45deg, #111 0 12px, #151515 12px 24px); border-bottom: 1px solid #222; color: #dfe2e6; padding: 56px 0 48px; }
+.hero-photo { background:
+    radial-gradient(ellipse 70% 90% at 100% 100%, rgba(225,6,0,.5), transparent 70%),
+    linear-gradient(90deg, rgba(10,10,11,.93) 0%, rgba(10,10,11,.8) 42%, rgba(10,10,11,.35) 75%, rgba(10,10,11,.2) 100%),
+    url("/assets/shop-hero.jpg") center 42% / cover no-repeat;
+  background:
+    radial-gradient(ellipse 70% 90% at 100% 100%, rgba(225,6,0,.5), transparent 70%),
+    linear-gradient(90deg, rgba(10,10,11,.93) 0%, rgba(10,10,11,.8) 42%, rgba(10,10,11,.35) 75%, rgba(10,10,11,.2) 100%),
+    image-set(url("/assets/shop-hero.webp") type("image/webp"), url("/assets/shop-hero.jpg") type("image/jpeg")) center 42% / cover no-repeat;
+  padding: 80px 0 72px; }
+.shop-photo { display: block; width: 100%; height: auto; border-radius: var(--radius); margin-top: 18px; }
 .hero h1 { color: #fff; max-width: 880px; }
 .eyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .8rem; color: #ff3a2f; font-weight: 700; margin: 0; }
 .lead { font-size: 1.15rem; max-width: 760px; margin: 0 0 26px; }
@@ -128,6 +138,11 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
 .call-fab { display: none; }
 
 @media (max-width: 900px) {
+  .hero-photo { background:
+      radial-gradient(ellipse 90% 70% at 100% 100%, rgba(225,6,0,.45), transparent 70%),
+      linear-gradient(180deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.88) 100%),
+      image-set(url("/assets/shop-hero-sm.webp") type("image/webp"), url("/assets/shop-hero-sm.jpg") type("image/jpeg")) 70% center / cover no-repeat;
+    padding: 48px 0 40px; }
   .brand img { height: 52px; }
   .header-row { min-height: 66px; }
   .main-nav { top: 69px !important; }

@@ -79,7 +79,7 @@ def business_schema():
         "telephone": TEL,
         "email": EMAIL,
         "image": DOMAIN + "/assets/og-image.png",
-        "logo": DOMAIN + "/assets/logo.svg",
+        "logo": DOMAIN + "/assets/logo-large.png",
         "address": {
             "@type": "PostalAddress",
             "streetAddress": SITE["street"],
@@ -169,8 +169,11 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <meta property="og:url" content="{url}">
 <meta property="og:image" content="{DOMAIN}/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#16181b">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
@@ -182,8 +185,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <header class="site-header">
   <div class="wrap header-row">
     <a class="brand" href="/" aria-label="NM UTV home">
-      <span class="brand-mark">NM</span><span class="brand-word">UTV</span>
-      <span class="brand-tag">Repair &amp; Service</span>
+      <img src="/assets/logo.png" width="293" height="120" alt="NM UTV - UTV &amp; side-by-side repair, Socorro NM">
     </a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Open menu">
     <label for="nav-toggle" class="nav-btn" aria-hidden="true"><span></span><span></span><span></span></label>
@@ -215,7 +217,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div>
-      <p class="footer-brand">NM UTV</p>
+      <p class="footer-brand"><img src="/assets/logo.png" width="195" height="80" alt="NM UTV" loading="lazy"></p>
       <p>UTV &amp; side-by-side repair<br>{SITE['street']}<br>{SITE['city']}, {SITE['state']} {SITE['zip']}</p>
       <p><a href="tel:{TEL}">{PHONE}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p>
       <p><a href="{MAP_LINK}" rel="noopener" target="_blank">Get directions</a></p>

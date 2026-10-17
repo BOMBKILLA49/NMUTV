@@ -185,7 +185,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <header class="site-header">
   <div class="wrap header-row">
     <a class="brand" href="/" aria-label="NM UTV home">
-      <img src="/assets/logo.png" width="293" height="120" alt="NM UTV - UTV &amp; side-by-side repair, Socorro NM">
+      <img src="/assets/logo.png" width="281" height="128" alt="NM UTV - UTV &amp; side-by-side repair, Socorro NM">
     </a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Open menu">
     <label for="nav-toggle" class="nav-btn" aria-hidden="true"><span></span><span></span><span></span></label>
@@ -217,7 +217,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website")
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div>
-      <p class="footer-brand"><img src="/assets/logo.png" width="195" height="80" alt="NM UTV" loading="lazy"></p>
+      <p class="footer-brand"><img src="/assets/logo.png" width="176" height="80" alt="NM UTV" loading="lazy"></p>
       <p>UTV &amp; side-by-side repair<br>{SITE['street']}<br>{SITE['city']}, {SITE['state']} {SITE['zip']}</p>
       <p><a href="tel:{TEL}">{PHONE}</a><br><a href="mailto:{EMAIL}">{EMAIL}</a></p>
       <p><a href="{MAP_LINK}" rel="noopener" target="_blank">Get directions</a></p>

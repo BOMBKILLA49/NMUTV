@@ -192,6 +192,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website",
     <nav class="main-nav" aria-label="Main">
       <a href="/services/">Services</a>
       <a href="/models/">Models</a>
+      <a href="/parts/">Parts</a>
       <a href="/utv-repair/">Service Areas</a>
       <a href="/about/">About</a>
       <a href="/contact/">Contact</a>
@@ -784,6 +785,45 @@ def build_contact():
          body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.7")
 
 
+EBAY_STORE = "https://www.ebay.com/str/geared2"
+
+PART_CATEGORIES = [
+    ("Yamaha Banshee wheels", "banshee", "10x5 front and 9x8 rear wheel sets for the Yamaha Banshee in multiple colors."),
+    ("Yamaha Raptor 700 wheels", "raptor", "Front and rear rim sets for the Raptor 700 and 700R."),
+    ("Yamaha YFZ 450 wheels", "yfz", "Wheel and beadlock sets for the YFZ 450 and 450R."),
+    ("Honda TRX 450 wheels", "trx", "Wheels and beadlocks for the Honda TRX 450R and 450ER."),
+    ("Beadlock wheels", "beadlock", "Beadlock wheel sets for racing and hard trail riding."),
+    ("All parts", "", "See everything we have listed right now."),
+]
+
+
+def build_parts():
+    crumbs = [("Home", "/"), ("Parts", "/parts/")]
+    cards = "".join(
+        f'<a class="card" href="{EBAY_STORE}{("?_nkw=" + q) if q else ""}" target="_blank" rel="noopener">'
+        f'<h3>{escape(name)}</h3><p>{escape(desc)}</p></a>'
+        for name, q, desc in PART_CATEGORIES
+    )
+    body = f"""{crumbs_html(crumbs)}
+{hero("ATV &amp; UTV Parts for Sale", "Wheels, beadlocks and more, sold through our eBay store, GPS Wheels. Buy online and we ship it, or pick it up at the shop in Socorro.")}
+<section class="section">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>Shop our parts store</h2>
+      <p>We sell parts on eBay so you get secure checkout, buyer protection and fast shipping. Our store has 100% positive feedback and hundreds of parts sold.</p>
+      <p><a class="btn" href="{EBAY_STORE}" target="_blank" rel="noopener">Shop parts on eBay</a></p>
+      <div class="cards">{cards}</div>
+      <h2>Want it installed?</h2>
+      <p>Buy your parts from us and we can install them at the shop. We mount <a href="/services/utv-tires-wheels/">tires and wheels</a> and do every other kind of side-by-side repair. Call {PHONE} if you have a question about fitment, or if you need a part you don't see listed.</p>
+    </div>
+    {location_box()}
+  </div>
+</section>"""
+    page("parts/index.html", "ATV & UTV Parts for Sale | Wheels & Beadlocks | NM UTV",
+         "Buy ATV and UTV wheels, beadlocks and parts from NM UTV in Socorro, NM. Shop our eBay store, GPS Wheels, or call 575-418-0601 about fitment and installation.",
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.8")
+
+
 def build_404():
     body = f"""{hero("Page not found", "That page doesn't exist, but we can still fix your UTV.")}
 <section class="section"><div class="wrap">{all_cities_html()}</div></section>"""
@@ -812,6 +852,7 @@ if __name__ == "__main__":
     build_models()
     build_about()
     build_contact()
+    build_parts()
     build_404()
     build_sitemap()
     print(f"Built {len(SITEMAP)} pages")

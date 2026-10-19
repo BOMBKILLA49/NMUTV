@@ -4,6 +4,7 @@
 Run from anywhere:  python3 build/build.py
 Writes HTML into the repo root (served by GitHub Pages).
 """
+import hashlib
 import json
 import math
 import os
@@ -25,6 +26,10 @@ MAP_EMBED = "https://www.google.com/maps?q=1261+Frontage+Rd+NW,+Socorro,+NM+8780
 MAP_LINK = "https://www.google.com/maps/search/?api=1&query=1261+Frontage+Rd+NW+Socorro+NM+87801"
 
 SITEMAP = []
+
+# Cache-bust the stylesheet by its contents so browsers pick up every change.
+with open(os.path.join(ROOT, "assets", "style.css"), "rb") as _f:
+    CSS_VERSION = hashlib.md5(_f.read()).hexdigest()[:8]
 
 
 # ---------------------------------------------------------------- helpers
@@ -177,7 +182,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website",
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v={TODAY.replace('-', '')}">
+<link rel="stylesheet" href="/assets/style.css?v={CSS_VERSION}">
 {head_extra}{schema_tags}
 </head>
 <body>

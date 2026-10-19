@@ -183,3 +183,13 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
 .tour-form input, .tour-form select, .tour-form textarea { font: inherit; font-weight: 400; padding: 11px 12px; border: 1px solid #b9bec6; border-radius: 6px; background: #fff; width: 100%; box-sizing: border-box; }
 .tour-form .btn { justify-self: start; cursor: pointer; font: inherit; font-weight: 700; }
 .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+.plan { list-style: none; padding: 0 !important; counter-reset: step; margin: 18px 0 8px; }
+.plan li { position: relative; padding: 0 0 22px 52px; counter-increment: step; }
+.plan li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; display: grid; place-items: center; }
+.plan li:not(:last-child)::after { content: ""; position: absolute; left: 16px; top: 38px; bottom: 4px; width: 2px; background: var(--line); }
+.plan h3 { margin: 4px 0 4px; color: var(--ink); }
+.plan p { margin: 0; }
+.lead-dark { font-size: 1.08rem; padding: 14px 18px; background: var(--sand); border-left: 4px solid var(--accent); border-radius: 6px; }
+.loc-box .tour-price, .loc-box .tour-price strong { color: #fff; }
+.other-tours { list-style: none; padding: 0 !important; margin: 0; font-size: .93rem; }
+.other-tours li { padding: 4px 0; }

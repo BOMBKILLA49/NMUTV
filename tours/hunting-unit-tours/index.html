@@ -75,7 +75,7 @@
   <p>A full day touring your hunting unit. We show you your unit boundaries, access points and the do&#x27;s and don&#x27;ts so you show up ready to hunt.</p>
   <ul class="checks"><li>Guide and 2-seat UTV</li><li>Breakfast, lunch and dinner for 2</li><li>Unit boundaries and access</li><li>Do&#x27;s and don&#x27;ts for your unit</li><li>Water and snacks</li></ul>
   
-  <a class="btn btn-block" href="#book" data-tour="All Day Unit Tour">Request this tour</a>
+  <a class="btn btn-block" href="/tours/hunting-unit-tours/unit-day-tour/">Request this tour</a>
 </article><article class="tour tour-featured" id="unit-weekend-tour">
   <p class="tour-badge">Most popular</p>
   <h3>Weekend Unit Tour + Camp</h3>
@@ -84,7 +84,7 @@
   <p>Two days touring your unit with a tent camp set up for you inside the unit, plus every meal. You learn the country and stay right where you&#x27;ll hunt.</p>
   <ul class="checks"><li>Guide and 2-seat UTV both days</li><li>Tent camp set up in your unit</li><li>Breakfast, lunch and dinner each day for 2</li><li>Unit boundaries and access</li><li>Do&#x27;s and don&#x27;ts for your unit</li></ul>
   
-  <a class="btn btn-block" href="#book" data-tour="Weekend Unit Tour + Camp">Request this tour</a>
+  <a class="btn btn-block" href="/tours/hunting-unit-tours/unit-weekend-tour/">Request this tour</a>
 </article></div>
   </div>
 </section>
@@ -128,9 +128,6 @@
 <script>
 (function () {
   var f = document.getElementById("tour-form");
-  document.querySelectorAll("[data-tour]").forEach(function (a) {
-    a.addEventListener("click", function () { f.tour.value = a.getAttribute("data-tour"); });
-  });
   f.addEventListener("submit", function (e) {
     e.preventDefault();
     var d = new FormData(f), lines = [];

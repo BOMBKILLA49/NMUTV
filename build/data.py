@@ -655,14 +655,14 @@ TOURS = [
         "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Safety briefing and riding lesson", "Water"],
     },
     {
-        "slug": "benchmark-hunt",
-        "name": "Benchmark Hunt",
+        "slug": "hidden-landmarks",
+        "name": "Hidden Landmarks Tour",
         "length": "2 to 3 hours",
         "price": 319,
         "slots": "Morning, afternoon or sunset",
         "lunch": False,
-        "summary": "Ride the desert trails and track down hidden survey benchmarks around Socorro that most locals don't even know are out there.",
-        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Benchmark stops and the stories behind them", "Water"],
+        "summary": "Ride to hidden places around the Socorro Valley that most locals don't even know about: a lone mine in the middle of nowhere with a door frame still standing on the mountainside, plus arroyos and trails you can't reach by car or truck.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Hidden landmark stops and the stories behind them", "Water"],
     },
     {
         "slug": "half-day-explorer",
@@ -671,8 +671,8 @@ TOURS = [
         "price": 429,
         "slots": "Morning or afternoon",
         "lunch": False,
-        "summary": "More trail time, more benchmarks and more ground covered across the BLM desert around Socorro.",
-        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Benchmark stops", "Water and snacks"],
+        "summary": "More trail time, more hidden landmarks and more ground covered across the BLM desert around Socorro.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Hidden landmark stops", "Water and snacks"],
     },
     {
         "slug": "socorro-to-san-antonio",
@@ -682,8 +682,8 @@ TOURS = [
         "slots": "Full day, starts in the morning",
         "lunch": True,
         "featured": True,
-        "summary": "Our signature tour. BLM desert trails, hidden benchmarks, lunch in San Antonio at the Buckhorn or the Owl Bar, and the Bosque del Apache National Wildlife Refuge.",
-        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Lunch for 2 in San Antonio", "Bosque del Apache visit", "Benchmark stops", "Water and snacks"],
+        "summary": "Our signature tour. BLM desert trails, hidden landmarks, lunch in San Antonio at the Buckhorn or the Owl Bar, and the Bosque del Apache National Wildlife Refuge.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Lunch for 2 in San Antonio", "Bosque del Apache visit", "Hidden landmark stops", "Water and snacks"],
     },
 ]
 
@@ -712,3 +712,92 @@ GMUS = ["1", "2A", "2B", "2C", "4", "5A", "5B", "6A", "6B", "6C", "7", "8", "9",
         "16A", "16B", "16C", "16D", "16E", "17", "18", "19", "20", "21A", "21B", "22", "23", "24", "25", "26",
         "27", "28", "29", "30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43",
         "45", "46", "47", "48", "49", "50", "51A", "51B", "52", "53", "54", "55A", "55B", "56", "57", "58", "59"]
+
+# Detail-page content for each tour, keyed by slug. "plan" is the step-by-step
+# of where we go; edit freely as routes get finalized and photos come in.
+BRING = ["Closed-toe shoes and long pants", "Layers, plus a jacket and gloves in winter",
+         "Sunglasses and sunscreen", "Phone or camera for pictures", "Driver's license if you're driving"]
+
+TOUR_DETAILS = {
+    "desert-trail-ride": {
+        "best_for": "First-timers, families and anyone passing through Socorro on I-25 who wants a quick taste of the desert.",
+        "plan": [
+            ("Check in at the shop", "Meet us at 1261 Frontage Rd NW in Socorro. Sign waivers and get fitted for helmets and goggles."),
+            ("Safety briefing and riding lesson", "Your guide goes over the controls, hand signals and how to handle sand and washes. No experience needed."),
+            ("Ride the BLM desert", "Head out onto the wide open Bureau of Land Management desert just outside town. Two-track trails, sandy washes and big views of Socorro Peak and the surrounding mountains."),
+            ("Photo stop", "Stop at a scenic overlook for pictures before riding back."),
+            ("Back to the shop", "Return to the shop about 1.5 to 2 hours after you leave."),
+        ],
+        "notes": ["Morning, afternoon and sunset times available", "Lunch is not included", "The route changes with trail conditions and your riding level"],
+    },
+    "hidden-landmarks": {
+        "best_for": "Explorers, history buffs and anyone who wants to see the Socorro Valley places you won't find on a map, and have a great time doing it.",
+        "plan": [
+            ("Check in at the shop", "Meet us at 1261 Frontage Rd NW in Socorro. Sign waivers and get fitted for helmets and goggles."),
+            ("Safety briefing", "Your guide covers the controls and the riding plan for the day."),
+            ("Trails you can't drive", "Ride trails and arroyos across the Socorro Valley that you can't get to by car or truck."),
+            ("The hidden mine and door frame", "Visit a lone old mine in the middle of nowhere, with a door frame still standing in a hidden spot on the mountainside. Most locals have never heard of it."),
+            ("Historic landmarks", "Stop at historic spots around the valley and hear the stories behind them."),
+            ("Back to the shop", "Return to the shop about 2 to 3 hours after you leave. Sunset tours finish with the best light of the day."),
+        ],
+        "notes": ["Old mines are dangerous. We view them from a safe distance and never go inside.",
+                  "Look and take pictures, but leave everything where you found it.",
+                  "Morning, afternoon and sunset times available", "Lunch is not included"],
+    },
+    "half-day-explorer": {
+        "best_for": "Riders who want more trail time and more ground covered without committing a whole day.",
+        "plan": [
+            ("Check in at the shop", "Meet us at 1261 Frontage Rd NW in Socorro. Sign waivers and get fitted for helmets and goggles."),
+            ("Safety briefing", "Your guide covers the controls and the plan for the day."),
+            ("Desert trails", "Ride farther out into the BLM desert than the shorter tours go, with washes, ridgelines and wide open views."),
+            ("Hidden landmarks", "Visit hidden spots around the Socorro Valley that most locals don't know about, like old mines and historic landmarks."),
+            ("Snack break", "Take a break in the shade with water and snacks."),
+            ("Back to the shop", "Return to the shop about 4 hours after you leave."),
+        ],
+        "notes": ["Morning or afternoon start", "Lunch is not included, but snacks and water are",
+                  "The route changes with trail conditions and your riding level"],
+    },
+    "socorro-to-san-antonio": {
+        "best_for": "Anyone who wants the full Socorro County experience: desert riding, history, great food and wildlife in one day.",
+        "plan": [
+            ("Morning check-in", "Meet us at the shop at 1261 Frontage Rd NW in Socorro. Sign waivers, get fitted for helmets and goggles, and get a safety briefing."),
+            ("BLM desert trails", "Spend the morning riding the wide open BLM desert around Socorro."),
+            ("Hidden landmarks", "Stop at hidden spots around the Socorro Valley that most people don't know are out there."),
+            ("Lunch in San Antonio", "Head south to the tiny town of San Antonio, New Mexico for lunch at the Buckhorn Tavern or the Owl Bar &amp; Cafe, both known for their green chile cheeseburgers. Lunch for 2 is included."),
+            ("Bosque del Apache", "Explore the Bosque del Apache National Wildlife Refuge along the Rio Grande just south of San Antonio. In the winter it fills with sandhill cranes and snow geese."),
+            ("Back to Socorro", "Return to the shop in the late afternoon, 6 to 8 hours after you leave."),
+        ],
+        "notes": ["Starts in the morning", "Lunch for 2 in San Antonio is included",
+                  "Crane season at the Bosque is usually November through February",
+                  "The route changes with trail conditions and restaurant hours"],
+    },
+    "unit-day-tour": {
+        "best_for": "Hunters who drew a tag and want to know their unit before opening day, especially first-timers and out-of-state hunters.",
+        "plan": [
+            ("Breakfast", "Start the day with breakfast, included for 2."),
+            ("Unit boundaries", "Ride the edges of your unit so you know exactly where it starts and ends."),
+            ("Roads and access", "See which roads go through, which are closed, and where you can get in and out with a truck or UTV."),
+            ("Public and private land", "Learn where public land ends and private land begins."),
+            ("Lunch in the field", "Lunch for 2 out in your unit."),
+            ("Do's and don'ts", "Go over the rules and local know-how for hunting your unit."),
+            ("Dinner", "Wrap up the day with dinner, included for 2."),
+        ],
+        "notes": ["Book as soon as you draw your tag", "Units far from Socorro may add a travel fee, quoted before you book",
+                  "Bring your tag info and any maps or GPS you plan to use"],
+    },
+    "unit-weekend-tour": {
+        "best_for": "Hunters who want to learn their unit and stay right in it, with camp and meals taken care of.",
+        "plan": [
+            ("Day 1: Meet up and breakfast", "Meet your guide and start with breakfast."),
+            ("Day 1: Tour your unit", "Ride your unit boundaries, roads and access points, and see where public and private land meet."),
+            ("Day 1: Camp setup", "We set up a tent camp for you inside your unit."),
+            ("Day 1: Dinner at camp", "Dinner at camp, included for 2."),
+            ("Day 2: Breakfast at camp", "Wake up in your unit with breakfast at camp."),
+            ("Day 2: More of your unit", "Cover the parts of the unit you didn't see on day 1 and go over the do's and don'ts for your hunt."),
+            ("Day 2: Lunch and dinner", "Lunch in the field and dinner, included for 2."),
+        ],
+        "notes": ["Bring your sleeping bag and personal gear. We send a full packing list when you book.",
+                  "Units far from Socorro may add a travel fee, quoted before you book",
+                  "Book as soon as you draw your tag"],
+    },
+}

@@ -12,7 +12,7 @@ import unicodedata
 from datetime import date
 from html import escape
 
-from data import CITIES, GMUS, HUNT_TOURS, MODELS, REGIONS, SERVICES, SHOP, SITE, TOURS
+from data import CITIES, GMUS, HUNT_TOURS, MODELS, REGIONS, SERVICES, SHOP, SITE, TOURS, TOUR_DETAILS, BRING
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TODAY = date.today().isoformat()
@@ -831,6 +831,10 @@ TOUR_POINTS = ["Private tours, your group only", "Priced per 2-seat UTV", "Exper
                "Helmets &amp; goggles included"]
 
 
+def tour_url(t, hunt=False):
+    return f'/tours/{"hunting-unit-tours/" if hunt else ""}{t["slug"]}/'
+
+
 def tour_card(t, hunt=False):
     inc = "".join(f"<li>{escape(i)}</li>" for i in t["includes"])
     extra = "" if hunt else f'<p class="tour-meta"><strong>Times:</strong> {escape(t["slots"])}</p>'
@@ -844,12 +848,12 @@ def tour_card(t, hunt=False):
   <p>{escape(t["summary"])}</p>
   <ul class="checks">{inc}</ul>
   {extra}
-  <a class="btn btn-block" href="#book" data-tour="{escape(t["name"])}">Request this tour</a>
+  <a class="btn btn-block" href="{tour_url(t, hunt)}">Request this tour</a>
 </article>"""
 
 
-def booking_form(options, hunt=False):
-    opts = "".join(f'<option>{escape(o)}</option>' for o in options)
+def booking_form(options, hunt=False, selected=None):
+    opts = "".join(f'<option{" selected" if o == selected else ""}>{escape(o)}</option>' for o in options)
     unit = ""
     if hunt:
         units = "".join(f"<option>Unit {u}</option>" for u in GMUS)
@@ -883,9 +887,6 @@ def booking_form(options, hunt=False):
 <script>
 (function () {{
   var f = document.getElementById("tour-form");
-  document.querySelectorAll("[data-tour]").forEach(function (a) {{
-    a.addEventListener("click", function () {{ f.tour.value = a.getAttribute("data-tour"); }});
-  }});
   f.addEventListener("submit", function (e) {{
     e.preventDefault();
     var d = new FormData(f), lines = [];
@@ -899,13 +900,71 @@ def booking_form(options, hunt=False):
 
 TOUR_STOPS = [
     ("BLM desert trails", "Miles of wide open Bureau of Land Management desert surround Socorro. Washes, ridgelines, mesas and views of the Magdalena and San Mateo mountains. Your guide picks the trails based on your riding experience."),
-    ("Hidden benchmarks", "Survey benchmarks are scattered across the desert around Socorro, and most people who live here have never seen one. We take you to them and tell you how they got there. Look and take pictures, but leave them where they are."),
+    ("Hidden landmarks", "The Socorro Valley is full of places most locals don't know about: a lone mine in the middle of nowhere with a door frame still standing on the mountainside, historic landmarks, and arroyos and trails you can't reach by car or truck. We take you to them and tell you the stories behind them."),
     ("Lunch in San Antonio", "San Antonio, New Mexico is a tiny town with a big reputation for green chile cheeseburgers. Full day tours stop for lunch at the Buckhorn Tavern or the Owl Bar &amp; Cafe."),
     ("Bosque del Apache", "The Bosque del Apache National Wildlife Refuge is just south of San Antonio along the Rio Grande. In the winter it fills with sandhill cranes, snow geese and other birds, and it's one of the best wildlife viewing spots in the Southwest."),
 ]
 
 
+def build_tour_detail(t, hunt=False):
+    d = TOUR_DETAILS[t["slug"]]
+    hub = ("Hunting Unit Tours", "/tours/hunting-unit-tours/") if hunt else ("Tours", "/tours/")
+    crumbs = [("Home", "/"), ("Tours", "/tours/")] + ([hub] if hunt else []) + [(t["name"], tour_url(t, hunt))]
+    group = HUNT_TOURS if hunt else TOURS
+    steps = "".join(f'<li><h3>{n}</h3><p>{x}</p></li>' for n, x in d["plan"])
+    inc = "".join(f"<li>{escape(i)}</li>" for i in t["includes"])
+    bring = "".join(f"<li>{escape(i)}</li>" for i in BRING)
+    notes = "".join(f"<li>{escape(i)}</li>" for i in d["notes"])
+    others = "".join(f'<li><a href="{tour_url(o, hunt)}">{escape(o["name"])}</a> &middot; ${o["price"]:,}</li>'
+                     for o in group if o is not t)
+    times = "" if hunt else f'<p><strong>Times:</strong> {escape(t["slots"])}</p>'
+    who = "hunters" if hunt else "riders"
+    body = f"""{crumbs_html(crumbs)}
+{hero(escape(t["name"]),
+      escape(t["summary"]),
+      eyebrow=f'${t["price"]:,} per UTV &middot; {escape(t["length"])}',
+      actions=f'''<a class="btn" href="#book">Request this tour</a>
+      <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
+      points=["Private, your group only", f"Up to 2 {who} per UTV", "Experienced local guides",
+              "Helmets &amp; goggles included"])}
+<section class="section">
+  <div class="wrap split">
+    <div class="prose">
+      <p class="lead-dark"><strong>Best for:</strong> {escape(d["best_for"])}</p>
+      <h2>Where we go</h2>
+      <ol class="plan">{steps}</ol>
+      <h2>What's included</h2>
+      <ul class="checks">{inc}</ul>
+      <h2>What to bring</h2>
+      <ul>{bring}{"<li>Your hunting tag info, maps and GPS</li>" if hunt else ""}</ul>
+      <h2>Good to know</h2>
+      <ul>{notes}<li>Every rider signs a waiver. Drivers need a valid driver's license.</li>
+      <li>If we cancel for weather, you can reschedule or get a full refund.</li></ul>
+    </div>
+    <aside class="loc-box">
+      <p class="loc-h">{escape(t["name"])}</p>
+      <p class="tour-price"><strong>${t["price"]:,}</strong> per UTV</p>
+      <p>{escape(t["length"])}<br>Up to 2 {who} per 2-seat UTV</p>
+      {times}
+      <a class="btn btn-block" href="#book">Request this tour</a>
+      <p class="small" style="margin-top:14px">Questions? Call <a href="tel:{TEL}">{PHONE}</a></p>
+      <p class="loc-h" style="margin-top:22px">Other tours</p>
+      <ul class="other-tours">{others}</ul>
+    </aside>
+  </div>
+</section>
+{booking_form([o["name"] for o in group], hunt=hunt, selected=t["name"])}"""
+    area = "New Mexico Hunting Unit Tour" if hunt else "Socorro, NM UTV Tour"
+    page(tour_url(t, hunt).strip("/") + "/index.html", f'{t["name"]} | {area} | NM UTV',
+         f'{t["name"]}: {t["summary"]} ${t["price"]:,} per 2-seat UTV.'[:300],
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.8")
+
+
 def build_tours():
+    for t in TOURS:
+        build_tour_detail(t)
+    for t in HUNT_TOURS:
+        build_tour_detail(t, hunt=True)
     crumbs = [("Home", "/"), ("Tours", "/tours/")]
     cards = "".join(tour_card(t) for t in TOURS)
     stops = "".join(f'<div class="stop"><h3>{n}</h3><p>{d}</p></div>' for n, d in TOUR_STOPS)
@@ -921,7 +980,7 @@ def build_tours():
     ]
     body = f"""{crumbs_html(crumbs)}
 {hero("Socorro, New Mexico UTV Tours",
-      "Guided side-by-side tours from Socorro to San Antonio and beyond. Ride the open BLM desert, find hidden benchmarks, eat a green chile cheeseburger at the Buckhorn or the Owl Bar, and explore the Bosque del Apache.",
+      "Guided side-by-side tours from Socorro to San Antonio and beyond. Ride the open BLM desert, find hidden landmarks, eat a green chile cheeseburger at the Buckhorn or the Owl Bar, and explore the Bosque del Apache.",
       eyebrow="Guided UTV tours · Socorro, NM",
       actions=f'''<a class="btn" href="#book">Request a tour</a>
       <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
@@ -943,7 +1002,7 @@ def build_tours():
 {booking_form([t["name"] for t in TOURS] + [t["name"] for t in HUNT_TOURS])}
 {faq_html(faqs, "UTV tour FAQ")}"""
     page("tours/index.html", "Socorro, NM UTV Tours | BLM Trails, San Antonio & Bosque del Apache | NM UTV",
-         "Guided UTV tours in Socorro, New Mexico from $229. Ride BLM desert trails, find hidden benchmarks, lunch in San Antonio and visit the Bosque del Apache.",
+         "Guided UTV tours in Socorro, New Mexico from $229. Ride BLM desert trails, find hidden landmarks, lunch in San Antonio and visit the Bosque del Apache.",
          body, schemas=[business_schema(), breadcrumb_schema(crumbs), faq_schema(faqs)], priority="0.9")
 
     crumbs = [("Home", "/"), ("Tours", "/tours/"), ("Hunting Unit Tours", "/tours/hunting-unit-tours/")]

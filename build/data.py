@@ -639,3 +639,76 @@ SERVICES = [
         ],
     },
 ]
+
+
+# ---------------------------------------------------------------- tours
+# Prices are per UTV (2-seat machine, up to 2 riders). Edit here and rebuild.
+TOURS = [
+    {
+        "slug": "desert-trail-ride",
+        "name": "Desert Trail Ride",
+        "length": "1.5 to 2 hours",
+        "price": 229,
+        "slots": "Morning, afternoon or sunset",
+        "lunch": False,
+        "summary": "A quick ride on the wide open BLM desert trails just outside Socorro. Great for first-timers and anyone passing through on I-25.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Safety briefing and riding lesson", "Water"],
+    },
+    {
+        "slug": "benchmark-hunt",
+        "name": "Benchmark Hunt",
+        "length": "2 to 3 hours",
+        "price": 319,
+        "slots": "Morning, afternoon or sunset",
+        "lunch": False,
+        "summary": "Ride the desert trails and track down hidden survey benchmarks around Socorro that most locals don't even know are out there.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Benchmark stops and the stories behind them", "Water"],
+    },
+    {
+        "slug": "half-day-explorer",
+        "name": "Half Day Explorer",
+        "length": "About 4 hours",
+        "price": 429,
+        "slots": "Morning or afternoon",
+        "lunch": False,
+        "summary": "More trail time, more benchmarks and more ground covered across the BLM desert around Socorro.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Benchmark stops", "Water and snacks"],
+    },
+    {
+        "slug": "socorro-to-san-antonio",
+        "name": "Socorro to San Antonio Full Day",
+        "length": "6 to 8 hours",
+        "price": 749,
+        "slots": "Full day, starts in the morning",
+        "lunch": True,
+        "featured": True,
+        "summary": "Our signature tour. BLM desert trails, hidden benchmarks, lunch in San Antonio at the Buckhorn or the Owl Bar, and the Bosque del Apache National Wildlife Refuge.",
+        "includes": ["Guide and 2-seat UTV", "Helmets and goggles", "Lunch for 2 in San Antonio", "Bosque del Apache visit", "Benchmark stops", "Water and snacks"],
+    },
+]
+
+HUNT_TOURS = [
+    {
+        "slug": "unit-day-tour",
+        "name": "All Day Unit Tour",
+        "length": "Full day",
+        "price": 895,
+        "summary": "A full day touring your hunting unit. We show you your unit boundaries, access points and the do's and don'ts so you show up ready to hunt.",
+        "includes": ["Guide and 2-seat UTV", "Breakfast, lunch and dinner for 2", "Unit boundaries and access", "Do's and don'ts for your unit", "Water and snacks"],
+    },
+    {
+        "slug": "unit-weekend-tour",
+        "name": "Weekend Unit Tour + Camp",
+        "length": "2 days, 1 or 2 nights",
+        "price": 2195,
+        "featured": True,
+        "summary": "Two days touring your unit with a tent camp set up for you inside the unit, plus every meal. You learn the country and stay right where you'll hunt.",
+        "includes": ["Guide and 2-seat UTV both days", "Tent camp set up in your unit", "Breakfast, lunch and dinner each day for 2", "Unit boundaries and access", "Do's and don'ts for your unit"],
+    },
+]
+
+# New Mexico Game Management Units
+GMUS = ["1", "2A", "2B", "2C", "4", "5A", "5B", "6A", "6B", "6C", "7", "8", "9", "10", "12", "13", "14", "15",
+        "16A", "16B", "16C", "16D", "16E", "17", "18", "19", "20", "21A", "21B", "22", "23", "24", "25", "26",
+        "27", "28", "29", "30", "31", "32", "33", "34", "36", "37", "38", "39", "40", "41", "42", "43",
+        "45", "46", "47", "48", "49", "50", "51A", "51B", "52", "53", "54", "55A", "55B", "56", "57", "58", "59"]

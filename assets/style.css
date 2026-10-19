@@ -159,3 +159,27 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
   .section { padding: 40px 0; }
   .call-fab { display: block; position: fixed; left: 16px; right: 16px; bottom: 14px; background: var(--accent); color: #fff; text-align: center; padding: 14px; border-radius: 8px; font-weight: 800; text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,.3); z-index: 60; }
 }
+
+/* tours */
+.tours { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; margin-top: 22px; align-items: start; }
+.tours-2 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); max-width: 760px; }
+.tour { position: relative; background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--ink); border-radius: var(--radius); padding: 22px; }
+.tour-featured { border-top-color: var(--accent); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+.tour-badge { position: absolute; top: -13px; right: 16px; margin: 0; background: var(--accent); color: #fff; font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 4px 10px; border-radius: 999px; }
+.tour h3 { margin: 0 0 6px; color: var(--ink); }
+.tour-price { margin: 0; color: var(--muted); }
+.tour-price strong { font-family: var(--head); font-size: 2rem; color: var(--ink); }
+.tour-len { margin: 2px 0 12px; font-size: .9rem; color: var(--muted); }
+.tour .checks { font-size: .93rem; }
+.tour-meta { font-size: .88rem; color: var(--muted); margin: 6px 0; }
+.tour .btn { margin-top: 14px; }
+.hunt-callout { margin-top: 28px; padding: 16px 20px; border-left: 4px solid var(--accent); background: var(--sand); border-radius: 6px; }
+.stops { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; margin-top: 22px; }
+.stop { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.stop h3 { margin-top: 0; color: var(--ink); }
+.stop p { margin: 0; font-size: .95rem; }
+.tour-form { display: grid; gap: 14px; margin-top: 18px; }
+.tour-form label { display: grid; gap: 6px; font-weight: 600; color: var(--ink); font-size: .93rem; }
+.tour-form input, .tour-form select, .tour-form textarea { font: inherit; font-weight: 400; padding: 11px 12px; border: 1px solid #b9bec6; border-radius: 6px; background: #fff; width: 100%; box-sizing: border-box; }
+.tour-form .btn { justify-self: start; cursor: pointer; font: inherit; font-weight: 700; }
+.form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }

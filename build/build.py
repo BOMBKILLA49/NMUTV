@@ -12,7 +12,7 @@ import unicodedata
 from datetime import date
 from html import escape
 
-from data import CITIES, MODELS, REGIONS, SERVICES, SHOP, SITE
+from data import CITIES, GMUS, HUNT_TOURS, MODELS, REGIONS, SERVICES, SHOP, SITE, TOURS
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TODAY = date.today().isoformat()
@@ -192,6 +192,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website",
     <nav class="main-nav" aria-label="Main">
       <a href="/services/">Services</a>
       <a href="/models/">Models</a>
+      <a href="/tours/">Tours</a>
       <a href="/parts/">Parts</a>
       <a href="/utv-repair/">Service Areas</a>
       <a href="/about/">About</a>
@@ -243,22 +244,24 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website",
     write(path, html, priority)
 
 
-def hero(h1, lead, eyebrow="Socorro, NM · Serving all of New Mexico", cls=""):
+DEFAULT_POINTS = ["Certified, experienced mechanics", "Quick turnaround", "Fair, upfront pricing",
+                  "Statewide pickup &amp; delivery"]
+
+
+def hero(h1, lead, eyebrow="Socorro, NM · Serving all of New Mexico", cls="", actions=None, points=None):
+    if actions is None:
+        actions = f'''<a class="btn" href="tel:{TEL}">Call {PHONE}</a>
+      <a class="btn btn-ghost" href="/services/utv-pickup-delivery/">Pickup &amp; delivery</a>'''
+    points = "".join(f"<li>{p}</li>" for p in (points or DEFAULT_POINTS))
     return f"""<section class="hero{(" " + cls) if cls else ""}">
   <div class="wrap">
     <p class="eyebrow">{eyebrow}</p>
     <h1>{h1}</h1>
     <p class="lead">{lead}</p>
     <div class="hero-actions">
-      <a class="btn" href="tel:{TEL}">Call {PHONE}</a>
-      <a class="btn btn-ghost" href="/services/utv-pickup-delivery/">Pickup &amp; delivery</a>
+      {actions}
     </div>
-    <ul class="hero-points">
-      <li>Certified, experienced mechanics</li>
-      <li>Quick turnaround</li>
-      <li>Fair, upfront pricing</li>
-      <li>Statewide pickup &amp; delivery</li>
-    </ul>
+    <ul class="hero-points">{points}</ul>
   </div>
 </section>"""
 
@@ -824,6 +827,166 @@ def build_parts():
          body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.8")
 
 
+TOUR_POINTS = ["Private tours, your group only", "Priced per 2-seat UTV", "Experienced local guides",
+               "Helmets &amp; goggles included"]
+
+
+def tour_card(t, hunt=False):
+    inc = "".join(f"<li>{escape(i)}</li>" for i in t["includes"])
+    extra = "" if hunt else f'<p class="tour-meta"><strong>Times:</strong> {escape(t["slots"])}</p>'
+    if not hunt and not t["lunch"]:
+        extra += '<p class="tour-meta">Lunch not included</p>'
+    return f"""<article class="tour{" tour-featured" if t.get("featured") else ""}" id="{t["slug"]}">
+  {'<p class="tour-badge">Most popular</p>' if t.get("featured") else ""}
+  <h3>{escape(t["name"])}</h3>
+  <p class="tour-price"><strong>${t["price"]:,}</strong> per UTV</p>
+  <p class="tour-len">{escape(t["length"])} &middot; up to 2 riders</p>
+  <p>{escape(t["summary"])}</p>
+  <ul class="checks">{inc}</ul>
+  {extra}
+  <a class="btn btn-block" href="#book" data-tour="{escape(t["name"])}">Request this tour</a>
+</article>"""
+
+
+def booking_form(options, hunt=False):
+    opts = "".join(f'<option>{escape(o)}</option>' for o in options)
+    unit = ""
+    if hunt:
+        units = "".join(f"<option>Unit {u}</option>" for u in GMUS)
+        unit = f"""<label>Your hunting unit (GMU)
+      <select name="unit" required><option value="">Select your unit</option>{units}<option>Not sure yet</option></select></label>
+    <label>What are you hunting?
+      <input name="species" placeholder="Elk, mule deer, pronghorn..."></label>"""
+    return f"""<section class="section alt" id="book">
+  <div class="wrap narrow">
+    <h2>Request a tour</h2>
+    <p>Tell us what you want and when. We'll confirm the date and guide by phone or email. Prefer to talk? Call <a href="tel:{TEL}">{PHONE}</a>.</p>
+    <form class="tour-form" id="tour-form">
+      <label>Tour
+        <select name="tour" required>{opts}</select></label>
+      {unit}
+      <div class="form-row">
+        <label>Preferred date<input type="date" name="date" required></label>
+        <label>Number of UTVs<input type="number" name="utvs" min="1" max="6" value="1" required></label>
+        <label>Total riders<input type="number" name="riders" min="1" max="12" value="2" required></label>
+      </div>
+      <div class="form-row">
+        <label>Your name<input name="name" autocomplete="name" required></label>
+        <label>Phone<input type="tel" name="phone" autocomplete="tel" required></label>
+      </div>
+      <label>Anything else we should know?<textarea name="notes" rows="3"></textarea></label>
+      <button class="btn" type="submit">Send tour request</button>
+      <p class="small">This opens your email app with your request filled in. Nothing is charged until we confirm your tour.</p>
+    </form>
+  </div>
+</section>
+<script>
+(function () {{
+  var f = document.getElementById("tour-form");
+  document.querySelectorAll("[data-tour]").forEach(function (a) {{
+    a.addEventListener("click", function () {{ f.tour.value = a.getAttribute("data-tour"); }});
+  }});
+  f.addEventListener("submit", function (e) {{
+    e.preventDefault();
+    var d = new FormData(f), lines = [];
+    d.forEach(function (v, k) {{ if (v) lines.push(k.charAt(0).toUpperCase() + k.slice(1) + ": " + v); }});
+    location.href = "mailto:{EMAIL}?subject=" + encodeURIComponent("Tour request: " + d.get("tour")) +
+      "&body=" + encodeURIComponent(lines.join("\n"));
+  }});
+}})();
+</script>"""
+
+
+TOUR_STOPS = [
+    ("BLM desert trails", "Miles of wide open Bureau of Land Management desert surround Socorro. Washes, ridgelines, mesas and views of the Magdalena and San Mateo mountains. Your guide picks the trails based on your riding experience."),
+    ("Hidden benchmarks", "Survey benchmarks are scattered across the desert around Socorro, and most people who live here have never seen one. We take you to them and tell you how they got there. Look and take pictures, but leave them where they are."),
+    ("Lunch in San Antonio", "San Antonio, New Mexico is a tiny town with a big reputation for green chile cheeseburgers. Full day tours stop for lunch at the Buckhorn Tavern or the Owl Bar &amp; Cafe."),
+    ("Bosque del Apache", "The Bosque del Apache National Wildlife Refuge is just south of San Antonio along the Rio Grande. In the winter it fills with sandhill cranes, snow geese and other birds, and it's one of the best wildlife viewing spots in the Southwest."),
+]
+
+
+def build_tours():
+    crumbs = [("Home", "/"), ("Tours", "/tours/")]
+    cards = "".join(tour_card(t) for t in TOURS)
+    stops = "".join(f'<div class="stop"><h3>{n}</h3><p>{d}</p></div>' for n, d in TOUR_STOPS)
+    faqs = [
+        ("How is pricing per UTV?", "Each price covers one 2-seat UTV and a guide, for up to 2 riders. Come alone or bring a passenger, the price is the same. Need more seats? Book more UTVs."),
+        ("Are tours private?", "Yes. Every tour is just your group and your guide. We never put strangers together."),
+        ("When do tours run?", "Short tours run in morning, afternoon and sunset time slots. The full day tour starts in the morning. We have a limited number of UTVs and guides, so book early, especially on weekends."),
+        ("Who can drive?", "Drivers need a valid driver's license. Passengers of all ages are welcome as long as they can wear a helmet and sit safely in the seat. Every rider signs a waiver."),
+        ("What should I wear?", "Closed-toe shoes, long pants and layers. It gets dusty, so bring sunglasses or use the goggles we provide. Bring sunscreen, and a jacket in the winter."),
+        ("What if the weather is bad?", "If we cancel for weather, you can reschedule or get a full refund."),
+        ("Where do tours start?", f"Tours meet at our shop, {ADDR_LINE}, right off I-25."),
+        ("Do you offer tours for hunters?", 'Yes. See our <a href="/tours/hunting-unit-tours/">hunting unit tours</a>, where we show you your unit before your hunt.'),
+    ]
+    body = f"""{crumbs_html(crumbs)}
+{hero("Socorro, New Mexico UTV Tours",
+      "Guided side-by-side tours from Socorro to San Antonio and beyond. Ride the open BLM desert, find hidden benchmarks, eat a green chile cheeseburger at the Buckhorn or the Owl Bar, and explore the Bosque del Apache.",
+      eyebrow="Guided UTV tours · Socorro, NM",
+      actions=f'''<a class="btn" href="#book">Request a tour</a>
+      <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
+      points=TOUR_POINTS)}
+<section class="section">
+  <div class="wrap">
+    <h2>Pick your tour</h2>
+    <p class="sub">All prices are per 2-seat UTV with a guide, for up to 2 riders.</p>
+    <div class="tours">{cards}</div>
+    <p class="hunt-callout"><strong>Hunting in New Mexico?</strong> We'll tour your unit with you before the hunt. <a href="/tours/hunting-unit-tours/">See hunting unit tours</a></p>
+  </div>
+</section>
+<section class="section alt">
+  <div class="wrap">
+    <h2>Where we ride</h2>
+    <div class="stops">{stops}</div>
+  </div>
+</section>
+{booking_form([t["name"] for t in TOURS] + [t["name"] for t in HUNT_TOURS])}
+{faq_html(faqs, "UTV tour FAQ")}"""
+    page("tours/index.html", "Socorro, NM UTV Tours | BLM Trails, San Antonio & Bosque del Apache | NM UTV",
+         "Guided UTV tours in Socorro, New Mexico from $229. Ride BLM desert trails, find hidden benchmarks, lunch in San Antonio and visit the Bosque del Apache.",
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs), faq_schema(faqs)], priority="0.9")
+
+    crumbs = [("Home", "/"), ("Tours", "/tours/"), ("Hunting Unit Tours", "/tours/hunting-unit-tours/")]
+    cards = "".join(tour_card(t, hunt=True) for t in HUNT_TOURS)
+    faqs = [
+        ("Which units do you cover?", "We cover hunting units across New Mexico. Select your unit when you request a tour and we'll confirm the details. Units far from Socorro may add a travel fee, which we quote before you book."),
+        ("When should I book?", "Book as soon as you draw your tag. Most hunters tour their unit in the weeks before opening day."),
+        ("What do you show me?", "Your unit boundaries, roads and access points, where public land meets private land, and the do's and don'ts for hunting that unit."),
+        ("How is pricing per UTV?", "Each price covers one 2-seat UTV and a guide for up to 2 hunters, including meals for 2. Hunting with a bigger group? Book more UTVs."),
+        ("Do I need my own camping gear for the weekend tour?", "We set up the tent camp for you. Bring your sleeping bag and personal gear, and we'll send you a full packing list when you book."),
+    ]
+    body = f"""{crumbs_html(crumbs)}
+{hero("New Mexico Hunting Unit Tours",
+      "Drew a tag? Get to know your unit before you hunt. We take you through your game management unit by UTV, show you the boundaries and access, and go over the do's and don'ts so you're ready for opening day.",
+      eyebrow="Deer, elk &amp; more · Statewide",
+      actions=f'''<a class="btn" href="#book">Select your unit</a>
+      <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
+      points=["Your unit, your boundaries", "Meals included", "Weekend tent camp option", "Priced per 2-seat UTV"])}
+<section class="section">
+  <div class="wrap">
+    <h2>Hunting unit tours</h2>
+    <p class="sub">All prices are per 2-seat UTV with a guide, for up to 2 hunters. Units far from Socorro may add a travel fee.</p>
+    <div class="tours tours-2">{cards}</div>
+  </div>
+</section>
+<section class="section alt">
+  <div class="wrap">
+    <h2>What you'll learn</h2>
+    <div class="stops">
+      <div class="stop"><h3>Your unit boundaries</h3><p>Know exactly where your unit starts and ends, so you never end up hunting the wrong side of the line.</p></div>
+      <div class="stop"><h3>Access and roads</h3><p>Which roads go through, which are closed, and where you can get in and out with a truck or a UTV.</p></div>
+      <div class="stop"><h3>Public and private land</h3><p>Where public land ends and private land begins, so you hunt where you're allowed to.</p></div>
+      <div class="stop"><h3>Do's and don'ts</h3><p>The rules and the local know-how that help first-timers and out-of-state hunters show up prepared.</p></div>
+    </div>
+  </div>
+</section>
+{booking_form([t["name"] for t in HUNT_TOURS], hunt=True)}
+{faq_html(faqs, "Hunting unit tour FAQ")}"""
+    page("tours/hunting-unit-tours/index.html", "New Mexico Hunting Unit Tours by UTV | Elk & Deer | NM UTV",
+         "Tour your New Mexico hunting unit by UTV before your elk or deer hunt. Learn your unit boundaries and access, meals included, weekend tent camp available.",
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs), faq_schema(faqs)], priority="0.8")
+
+
 def build_404():
     body = f"""{hero("Page not found", "That page doesn't exist, but we can still fix your UTV.")}
 <section class="section"><div class="wrap">{all_cities_html()}</div></section>"""
@@ -853,6 +1016,7 @@ if __name__ == "__main__":
     build_about()
     build_contact()
     build_parts()
+    build_tours()
     build_404()
     build_sitemap()
     print(f"Built {len(SITEMAP)} pages")

@@ -736,7 +736,7 @@ TOUR_DETAILS = {
             ("Check in at the shop", "Meet us at 1261 Frontage Rd NW in Socorro. Sign waivers and get fitted for helmets and goggles."),
             ("Safety briefing", "Your guide covers the controls and the riding plan for the day."),
             ("Trails you can't drive", "Ride trails and arroyos across the Socorro Valley that you can't get to by car or truck."),
-            ("The hidden mine and door frame", "Visit a lone old mine in the middle of nowhere, with a door frame still standing in a hidden spot on the mountainside. Most locals have never heard of it."),
+            ("Hidden mine near Gonzales Mines", "Visit a lone old mine in the middle of nowhere, with a door frame entrance in a hidden spot on the mountainside. Most locals have never heard of it."),
             ("Historic landmarks", "Stop at historic spots around the valley and hear the stories behind them."),
             ("Back to the shop", "Return to the shop about 2 to 3 hours after you leave. Sunset tours finish with the best light of the day."),
         ],

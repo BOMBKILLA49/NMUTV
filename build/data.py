@@ -693,6 +693,8 @@ HUNT_TOURS = [
     {
         "slug": "unit-day-tour",
         "name": "All Day Unit Tour",
+        "photo": "hunting-unit-tours-new-mexico",
+        "photo_inline": False,
         "length": "Full day",
         "price": 895,
         "summary": "A full day touring your hunting unit. We show you your unit boundaries, access points and the do's and don'ts so you show up ready to hunt.",

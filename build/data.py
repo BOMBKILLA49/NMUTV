@@ -647,7 +647,7 @@ TOURS = [
     {
         "slug": "desert-trail-ride",
         "name": "Desert Trail Ride",
-        "photo": "tour-bursum-springs",
+        "photo": "tour-bursum-springs-2",
         "photo_alt": "UTVs parked at Bursum Springs near Socorro, New Mexico",
         "length": "1.5 to 2 hours",
         "price": 229,

@@ -928,8 +928,8 @@ def build_tour_detail(t, hunt=False):
     if t.get("photo"):
         ph = t["photo"]
         photo = f'''<picture>
-        <source type="image/webp" srcset="/assets/{ph}-sm.webp 800w, /assets/{ph}.webp 1536w" sizes="(max-width: 900px) 100vw, 760px">
-        <img class="shop-photo" src="/assets/{ph}.jpg" srcset="/assets/{ph}-sm.jpg 800w, /assets/{ph}.jpg 1536w" sizes="(max-width: 900px) 100vw, 760px" width="1536" height="1024" alt="{escape(t.get("photo_alt", t["name"]))}" loading="lazy">
+        <source type="image/webp" srcset="/assets/{ph}-sm.webp 800w, /assets/{ph}.webp 1728w" sizes="(max-width: 900px) 100vw, 760px">
+        <img class="shop-photo" src="/assets/{ph}.jpg" srcset="/assets/{ph}-sm.jpg 800w, /assets/{ph}.jpg 1728w" sizes="(max-width: 900px) 100vw, 760px" width="1728" height="1152" alt="{escape(t.get("photo_alt", t["name"]))}" loading="lazy">
       </picture>'''
     body = f"""{crumbs_html(crumbs)}
 {hero(escape(t["name"]),

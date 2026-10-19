@@ -213,3 +213,13 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
       linear-gradient(180deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.88) 100%),
       image-set(url("/assets/new-mexico-hunting-tours-sm.webp") type("image/webp"), url("/assets/new-mexico-hunting-tours-sm.jpg") type("image/jpeg")) center 62% / cover no-repeat; }
 }
+.hero-new-mexico-hunting-unit-tours { background:
+    radial-gradient(ellipse 70% 90% at 100% 100%, rgba(225,6,0,.5), transparent 70%),
+    linear-gradient(90deg, rgba(10,10,11,.93) 0%, rgba(10,10,11,.8) 42%, rgba(10,10,11,.35) 75%, rgba(10,10,11,.2) 100%),
+    image-set(url("/assets/new-mexico-hunting-unit-tours.webp") type("image/webp"), url("/assets/new-mexico-hunting-unit-tours.jpg") type("image/jpeg")) center 60% / cover no-repeat; }
+@media (max-width: 900px) {
+  .hero-new-mexico-hunting-unit-tours { background:
+      radial-gradient(ellipse 90% 70% at 100% 100%, rgba(225,6,0,.45), transparent 70%),
+      linear-gradient(180deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.88) 100%),
+      image-set(url("/assets/new-mexico-hunting-unit-tours-sm.webp") type("image/webp"), url("/assets/new-mexico-hunting-unit-tours-sm.jpg") type("image/jpeg")) center 60% / cover no-repeat; }
+}

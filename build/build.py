@@ -925,7 +925,7 @@ def build_tour_detail(t, hunt=False):
     times = "" if hunt else f'<p><strong>Times:</strong> {escape(t["slots"])}</p>'
     who = "hunters" if hunt else "riders"
     photo = ""
-    if t.get("photo"):
+    if t.get("photo") and t.get("photo_inline", True):
         ph = t["photo"]
         photo = f'''<picture>
         <source type="image/webp" srcset="/assets/{ph}-sm.webp 800w, /assets/{ph}.webp 1728w" sizes="(max-width: 900px) 100vw, 760px">

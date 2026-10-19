@@ -701,6 +701,8 @@ HUNT_TOURS = [
     {
         "slug": "unit-weekend-tour",
         "name": "Weekend Unit Tour + Camp",
+        "photo": "new-mexico-hunting-unit-tours",
+        "photo_inline": False,
         "length": "2 days, 1 or 2 nights",
         "price": 2195,
         "featured": True,

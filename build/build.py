@@ -1034,7 +1034,8 @@ def build_tours():
       eyebrow="Deer, elk &amp; more · Statewide",
       actions=f'''<a class="btn" href="#book">Select your unit</a>
       <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
-      points=["Your unit, your boundaries", "Meals included", "Weekend tent camp option", "Priced per 2-seat UTV"])}
+      points=["Your unit, your boundaries", "Meals included", "Weekend tent camp option", "Priced per 2-seat UTV"],
+      cls="hero-photo hero-tour-hunting")}
 <section class="section">
   <div class="wrap">
     <h2>Hunting unit tours</h2>

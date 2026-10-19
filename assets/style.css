@@ -203,3 +203,13 @@ h3 { font-size: 1.15rem; margin: 0 0 .35em; }
       linear-gradient(180deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.88) 100%),
       image-set(url("/assets/tour-bursum-springs-2-sm.webp") type("image/webp"), url("/assets/tour-bursum-springs-2-sm.jpg") type("image/jpeg")) 30% center / cover no-repeat; }
 }
+.hero-tour-hunting { background:
+    radial-gradient(ellipse 70% 90% at 100% 100%, rgba(225,6,0,.5), transparent 70%),
+    linear-gradient(90deg, rgba(10,10,11,.93) 0%, rgba(10,10,11,.8) 42%, rgba(10,10,11,.35) 75%, rgba(10,10,11,.2) 100%),
+    image-set(url("/assets/tour-hunting.webp") type("image/webp"), url("/assets/tour-hunting.jpg") type("image/jpeg")) center 62% / cover no-repeat; }
+@media (max-width: 900px) {
+  .hero-tour-hunting { background:
+      radial-gradient(ellipse 90% 70% at 100% 100%, rgba(225,6,0,.45), transparent 70%),
+      linear-gradient(180deg, rgba(10,10,11,.82) 0%, rgba(10,10,11,.88) 100%),
+      image-set(url("/assets/tour-hunting-sm.webp") type("image/webp"), url("/assets/tour-hunting-sm.jpg") type("image/jpeg")) center 62% / cover no-repeat; }
+}

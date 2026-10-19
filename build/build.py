@@ -926,7 +926,8 @@ def build_tour_detail(t, hunt=False):
       actions=f'''<a class="btn" href="#book">Request this tour</a>
       <a class="btn btn-ghost" href="tel:{TEL}">Call {PHONE}</a>''',
       points=["Private, your group only", f"Up to 2 {who} per UTV", "Experienced local guides",
-              "Helmets &amp; goggles included"])}
+              "Helmets &amp; goggles included"],
+      cls=f'hero-photo hero-{t["photo"]}' if t.get("photo") else "")}
 <section class="section">
   <div class="wrap split">
     <div class="prose">

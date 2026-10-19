@@ -647,6 +647,7 @@ TOURS = [
     {
         "slug": "desert-trail-ride",
         "name": "Desert Trail Ride",
+        "photo": "tour-bursum-springs",
         "length": "1.5 to 2 hours",
         "price": 229,
         "slots": "Morning, afternoon or sunset",

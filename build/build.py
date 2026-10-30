@@ -198,7 +198,7 @@ def page(path, title, desc, body, schemas=(), priority="0.6", og_type="website",
       <a href="/services/">Services</a>
       <a href="/models/">Models</a>
       <a href="/tours/">Tours</a>
-      <a href="/parts/">Parts</a>
+      <a href="/shop/">Shop</a>
       <a href="/utv-repair/">Service Areas</a>
       <a href="/about/">About</a>
       <a href="/contact/">Contact</a>
@@ -1061,6 +1061,130 @@ def build_tours():
          body, schemas=[business_schema(), breadcrumb_schema(crumbs), faq_schema(faqs)], priority="0.8")
 
 
+# Products load in the browser from this CSV. Paste the Google Sheet's
+# "Publish to web" CSV link here to manage products from the sheet; while it's
+# empty the shop reads assets/shop-products.csv from this repo.
+SHOP_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ1Rr0-HOmYp_5tIrh469fIcqWeX8r2DsSiQ3UB-QWOhVuk-0Sr2O9d2mo5oUvufS1p7MhQ9Hpiss0/pub?output=csv"
+
+
+def build_shop():
+    crumbs = [("Home", "/"), ("Shop", "/shop/")]
+    source = SHOP_SHEET_CSV or "/assets/shop-products.csv"
+    body = f"""{crumbs_html(crumbs)}
+{hero("Shop Parts", "Truck, diesel, UTV and performance parts from brands we trust. Free shipping in the lower 48. Secure checkout by card or Apple Pay.",
+      eyebrow="NM UTV parts shop",
+      actions=f'''<a class="btn" href="#products">Browse parts</a>
+      <a class="btn btn-ghost" href="sms:{TEL}">Text us for a quote</a>''',
+      points=["Brand new parts", "Free shipping, lower 48", "Secure card checkout", "Real people in Socorro, NM"])}
+<section class="section" id="products">
+  <div class="wrap">
+    <div class="shop-bar">
+      <input type="search" id="shop-q" placeholder="Search parts, part numbers, vehicles" aria-label="Search parts">
+      <div class="shop-cats" id="shop-cats" role="group" aria-label="Filter by category"></div>
+    </div>
+    <p class="shop-status" id="shop-status">Loading parts...</p>
+    <div class="shop-grid" id="shop-grid"></div>
+  </div>
+</section>
+<section class="section alt">
+  <div class="wrap split">
+    <div class="prose">
+      <h2>Need a custom quote?</h2>
+      <p>Shipping to Alaska, Hawaii or overseas, buying more than one, or looking for a part you don't see here? Call or text <a href="tel:{TEL}">{PHONE}</a> or email <a href="mailto:{EMAIL}">{EMAIL}</a> with the part and where it's going. We'll send you a secure payment link with your exact price and shipping.</p>
+      <h2>How ordering works</h2>
+      <ul class="checks">
+        <li><strong>Pay securely.</strong> Checkout is handled by Stripe. We never see your card number.</li>
+        <li><strong>We ship it.</strong> Most parts ship within 3 business days, free to the lower 48.</li>
+        <li><strong>Want it installed?</strong> Have it shipped to the shop and we'll install it.</li>
+      </ul>
+      <p>You can also find us on eBay: <a href="{EBAY_STORE}" target="_blank" rel="noopener">see our eBay store</a>.</p>
+    </div>
+    {location_box()}
+  </div>
+</section>
+<script>
+(function () {{
+  var SRC = {json.dumps(source)};
+  var TEL = {json.dumps(TEL)}, PHONE = {json.dumps(PHONE)};
+  var grid = document.getElementById("shop-grid"), status = document.getElementById("shop-status");
+  var q = document.getElementById("shop-q"), catsEl = document.getElementById("shop-cats");
+  var items = [], cat = "All";
+
+  function parseCSV(text) {{
+    var rows = [], row = [], cell = "", inQ = false;
+    for (var i = 0; i < text.length; i++) {{
+      var c = text[i];
+      if (inQ) {{
+        if (c === '"' && text[i + 1] === '"') {{ cell += '"'; i++; }}
+        else if (c === '"') inQ = false;
+        else cell += c;
+      }} else if (c === '"') inQ = true;
+      else if (c === ",") {{ row.push(cell); cell = ""; }}
+      else if (c === "\\n" || c === "\\r") {{
+        if (c === "\\r" && text[i + 1] === "\\n") i++;
+        row.push(cell); rows.push(row); row = []; cell = "";
+      }} else cell += c;
+    }}
+    if (cell || row.length) {{ row.push(cell); rows.push(row); }}
+    var head = (rows.shift() || []).map(function (h) {{ return h.trim().toLowerCase(); }});
+    return rows.filter(function (r) {{ return r.join("").trim(); }}).map(function (r) {{
+      var o = {{}}; head.forEach(function (h, i) {{ o[h] = (r[i] || "").trim(); }}); return o;
+    }});
+  }}
+  function esc(s) {{ return String(s || "").replace(/[&<>"']/g, function (c) {{ return {{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}}[c]; }}); }}
+  function money(p) {{ var n = parseFloat(String(p).replace(/[$,]/g, "")); return isNaN(n) ? "" : "$" + n.toLocaleString("en-US", {{minimumFractionDigits: 2, maximumFractionDigits: 2}}); }}
+  function safeUrl(u) {{ return /^https:\\/\\//i.test(u || "") ? u : ""; }}
+
+  function render() {{
+    var term = q.value.trim().toLowerCase();
+    var list = items.filter(function (it) {{
+      return (cat === "All" || it.category === cat) &&
+        (!term || (it.name + " " + it.sku + " " + it.description + " " + it.category).toLowerCase().indexOf(term) !== -1);
+    }});
+    grid.innerHTML = list.map(function (it) {{
+      var photo = safeUrl(it.photo), link = safeUrl(it.buy_link);
+      var buy = link
+        ? '<a class="btn btn-block" href="' + esc(link) + '" target="_blank" rel="noopener">Buy now</a>'
+        : '<a class="btn btn-block" href="sms:' + TEL + '?body=' + encodeURIComponent("Hi, I'd like to order: " + it.name + (it.sku ? " (" + it.sku + ")" : "")) + '">Text to order</a>';
+      return '<article class="product">' +
+        (photo ? '<div class="product-img"><img src="' + esc(photo) + '" alt="' + esc(it.name) + '" loading="lazy"></div>' : '') +
+        '<div class="product-body"><p class="product-cat">' + esc(it.category) + '</p>' +
+        '<h3>' + esc(it.name) + '</h3>' +
+        (it.description ? '<p class="product-desc">' + esc(it.description) + '</p>' : '') +
+        '<p class="product-price">' + esc(money(it.price)) + '</p>' + buy +
+        (it.sku ? '<p class="product-sku">Part # ' + esc(it.sku) + '</p>' : '') + '</div></article>';
+    }}).join("");
+    status.textContent = list.length ? "" : (items.length ? "No parts match that search." : "");
+    status.hidden = !status.textContent;
+  }}
+  function renderCats() {{
+    var cats = ["All"].concat(items.map(function (i) {{ return i.category; }}).filter(function (c, i, a) {{ return c && a.indexOf(c) === i; }}).sort());
+    catsEl.innerHTML = cats.map(function (c) {{
+      return '<button type="button" class="chip' + (c === cat ? " on" : "") + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
+    }}).join("");
+  }}
+  catsEl.addEventListener("click", function (e) {{
+    var b = e.target.closest("[data-cat]"); if (!b) return;
+    cat = b.getAttribute("data-cat"); renderCats(); render();
+  }});
+  q.addEventListener("input", render);
+
+  fetch(SRC, {{cache: "no-store"}}).then(function (r) {{ if (!r.ok) throw new Error(r.status); return r.text(); }})
+    .then(function (text) {{
+      items = parseCSV(text).filter(function (it) {{ return it.name && (it.show || "yes").toLowerCase() !== "no"; }});
+      renderCats(); render();
+      if (!items.length) status.textContent = "New parts coming soon. Call " + PHONE + " for what you need.";
+    }})
+    .catch(function () {{
+      status.innerHTML = 'Parts list is unavailable right now. Call or text <a href="tel:' + TEL + '">' + PHONE + '</a> and we will help you.';
+    }});
+}})();
+</script>"""
+    page("shop/index.html", "Shop Truck, Diesel & UTV Parts | NM UTV, Socorro NM",
+         "Buy truck, diesel, UTV and performance parts from NM UTV in Socorro, NM. Free shipping to the lower 48, secure card checkout, custom quotes for Alaska and Hawaii.",
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.9")
+
+
 def build_404():
     body = f"""{hero("Page not found", "That page doesn't exist, but we can still fix your UTV.")}
 <section class="section"><div class="wrap">{all_cities_html()}</div></section>"""
@@ -1090,6 +1214,7 @@ if __name__ == "__main__":
     build_about()
     build_contact()
     build_parts()
+    build_shop()
     build_tours()
     build_404()
     build_sitemap()

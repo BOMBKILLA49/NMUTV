@@ -1066,10 +1066,13 @@ def build_tours():
 # empty the shop reads assets/shop-products.csv from this repo.
 SHOP_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ1Rr0-HOmYp_5tIrh469fIcqWeX8r2DsSiQ3UB-QWOhVuk-0Sr2O9d2mo5oUvufS1p7MhQ9Hpiss0/pub?output=csv"
 
+source = SHOP_SHEET_CSV or "/assets/shop-products.csv"
+with open(os.path.join(ROOT, "assets", "shop.js"), "rb") as _f:
+    SHOP_JS_VERSION = hashlib.md5(_f.read()).hexdigest()[:8]
+
 
 def build_shop():
     crumbs = [("Home", "/"), ("Shop", "/shop/")]
-    source = SHOP_SHEET_CSV or "/assets/shop-products.csv"
     body = f"""{crumbs_html(crumbs)}
 {hero("Shop Parts", "Truck, diesel, UTV and performance parts from brands we trust. Free shipping in the lower 48. Secure checkout by card or Apple Pay.",
       eyebrow="NM UTV parts shop",
@@ -1102,87 +1105,31 @@ def build_shop():
     {location_box()}
   </div>
 </section>
-<script>
-(function () {{
-  var SRC = {json.dumps(source)};
-  var TEL = {json.dumps(TEL)}, PHONE = {json.dumps(PHONE)};
-  var grid = document.getElementById("shop-grid"), status = document.getElementById("shop-status");
-  var q = document.getElementById("shop-q"), catsEl = document.getElementById("shop-cats");
-  var items = [], cat = "All";
-
-  function parseCSV(text) {{
-    var rows = [], row = [], cell = "", inQ = false;
-    for (var i = 0; i < text.length; i++) {{
-      var c = text[i];
-      if (inQ) {{
-        if (c === '"' && text[i + 1] === '"') {{ cell += '"'; i++; }}
-        else if (c === '"') inQ = false;
-        else cell += c;
-      }} else if (c === '"') inQ = true;
-      else if (c === ",") {{ row.push(cell); cell = ""; }}
-      else if (c === "\\n" || c === "\\r") {{
-        if (c === "\\r" && text[i + 1] === "\\n") i++;
-        row.push(cell); rows.push(row); row = []; cell = "";
-      }} else cell += c;
-    }}
-    if (cell || row.length) {{ row.push(cell); rows.push(row); }}
-    var head = (rows.shift() || []).map(function (h) {{ return h.trim().toLowerCase(); }});
-    return rows.filter(function (r) {{ return r.join("").trim(); }}).map(function (r) {{
-      var o = {{}}; head.forEach(function (h, i) {{ o[h] = (r[i] || "").trim(); }}); return o;
-    }});
-  }}
-  function esc(s) {{ return String(s || "").replace(/[&<>"']/g, function (c) {{ return {{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}}[c]; }}); }}
-  function money(p) {{ var n = parseFloat(String(p).replace(/[$,]/g, "")); return isNaN(n) ? "" : "$" + n.toLocaleString("en-US", {{minimumFractionDigits: 2, maximumFractionDigits: 2}}); }}
-  function safeUrl(u) {{ return /^https:\\/\\//i.test(u || "") ? u : ""; }}
-
-  function render() {{
-    var term = q.value.trim().toLowerCase();
-    var list = items.filter(function (it) {{
-      return (cat === "All" || it.category === cat) &&
-        (!term || (it.name + " " + it.sku + " " + it.description + " " + it.category).toLowerCase().indexOf(term) !== -1);
-    }});
-    grid.innerHTML = list.map(function (it) {{
-      var photo = safeUrl(it.photo), link = safeUrl(it.buy_link);
-      var buy = link
-        ? '<a class="btn btn-block" href="' + esc(link) + '" target="_blank" rel="noopener">Buy now</a>'
-        : '<a class="btn btn-block" href="sms:' + TEL + '?body=' + encodeURIComponent("Hi, I'd like to order: " + it.name + (it.sku ? " (" + it.sku + ")" : "")) + '">Text to order</a>';
-      return '<article class="product">' +
-        (photo ? '<div class="product-img"><img src="' + esc(photo) + '" alt="' + esc(it.name) + '" loading="lazy"></div>' : '') +
-        '<div class="product-body"><p class="product-cat">' + esc(it.category) + '</p>' +
-        '<h3>' + esc(it.name) + '</h3>' +
-        (it.description ? '<p class="product-desc">' + esc(it.description) + '</p>' : '') +
-        '<p class="product-price">' + esc(money(it.price)) + '</p>' + buy +
-        (it.sku ? '<p class="product-sku">Part # ' + esc(it.sku) + '</p>' : '') + '</div></article>';
-    }}).join("");
-    status.textContent = list.length ? "" : (items.length ? "No parts match that search." : "");
-    status.hidden = !status.textContent;
-  }}
-  function renderCats() {{
-    var cats = ["All"].concat(items.map(function (i) {{ return i.category; }}).filter(function (c, i, a) {{ return c && a.indexOf(c) === i; }}).sort());
-    catsEl.innerHTML = cats.map(function (c) {{
-      return '<button type="button" class="chip' + (c === cat ? " on" : "") + '" data-cat="' + esc(c) + '">' + esc(c) + '</button>';
-    }}).join("");
-  }}
-  catsEl.addEventListener("click", function (e) {{
-    var b = e.target.closest("[data-cat]"); if (!b) return;
-    cat = b.getAttribute("data-cat"); renderCats(); render();
-  }});
-  q.addEventListener("input", render);
-
-  fetch(SRC, {{cache: "no-store"}}).then(function (r) {{ if (!r.ok) throw new Error(r.status); return r.text(); }})
-    .then(function (text) {{
-      items = parseCSV(text).filter(function (it) {{ return it.name && (it.show || "yes").toLowerCase() !== "no"; }});
-      renderCats(); render();
-      if (!items.length) status.textContent = "New parts coming soon. Call " + PHONE + " for what you need.";
-    }})
-    .catch(function () {{
-      status.innerHTML = 'Parts list is unavailable right now. Call or text <a href="tel:' + TEL + '">' + PHONE + '</a> and we will help you.';
-    }});
-}})();
-</script>"""
+<div hidden data-shop-src="{escape(source)}" data-tel="{TEL}" data-phone="{PHONE}"></div>
+<script src="/assets/shop.js?v={SHOP_JS_VERSION}" defer></script>"""
     page("shop/index.html", "Shop Truck, Diesel & UTV Parts | NM UTV, Socorro NM",
          "Buy truck, diesel, UTV and performance parts from NM UTV in Socorro, NM. Free shipping to the lower 48, secure card checkout, custom quotes for Alaska and Hawaii.",
          body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.9")
+
+
+def build_shop_item():
+    # One page for every product: /shop/item/?sku=... ; content is filled in from the sheet.
+    crumbs = [("Home", "/"), ("Shop", "/shop/")]
+    body = f"""<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/shop/">Shop</a> / <span id="crumb-name" aria-current="page">Part</span></nav>
+<section class="section">
+  <div class="wrap">
+    <p class="shop-status" id="item-status" hidden></p>
+    <div class="item" id="item" hidden></div>
+    <div class="item-more" id="item-more"></div>
+  </div>
+</section>
+<div hidden data-shop-src="{escape(source)}" data-tel="{TEL}" data-phone="{PHONE}"></div>
+<script src="/assets/shop.js?v={SHOP_JS_VERSION}" defer></script>"""
+    before = len(SITEMAP)
+    page("shop/item/index.html", "Part Details | NM UTV Shop",
+         "Part details, photos, fitment and secure checkout from the NM UTV parts shop in Socorro, NM.",
+         body, schemas=[business_schema(), breadcrumb_schema(crumbs)])
+    del SITEMAP[before:]  # the template page itself isn't a real product URL
 
 
 def build_404():
@@ -1215,6 +1162,7 @@ if __name__ == "__main__":
     build_contact()
     build_parts()
     build_shop()
+    build_shop_item()
     build_tours()
     build_404()
     build_sitemap()

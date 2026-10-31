@@ -1066,7 +1066,8 @@ def build_tours():
 # empty the shop reads assets/shop-products.csv from this repo.
 SHOP_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ1Rr0-HOmYp_5tIrh469fIcqWeX8r2DsSiQ3UB-QWOhVuk-0Sr2O9d2mo5oUvufS1p7MhQ9Hpiss0/pub?output=csv"
 
-source = SHOP_SHEET_CSV or "/assets/shop-products.csv"
+# SHOP_LOCAL=1 python3 build/build.py  -> test against assets/shop-products.csv instead of the sheet
+source = "/assets/shop-products.csv" if os.environ.get("SHOP_LOCAL") else (SHOP_SHEET_CSV or "/assets/shop-products.csv")
 with open(os.path.join(ROOT, "assets", "shop.js"), "rb") as _f:
     SHOP_JS_VERSION = hashlib.md5(_f.read()).hexdigest()[:8]
 
@@ -1074,41 +1075,73 @@ with open(os.path.join(ROOT, "assets", "shop.js"), "rb") as _f:
 def build_shop():
     crumbs = [("Home", "/"), ("Shop", "/shop/")]
     body = f"""{crumbs_html(crumbs)}
-{hero("Shop Parts", "Truck, diesel, UTV and performance parts from brands we trust. Free shipping in the lower 48. Secure checkout by card or Apple Pay.",
-      eyebrow="NM UTV parts shop",
-      actions=f'''<a class="btn" href="#products">Browse parts</a>
-      <a class="btn btn-ghost" href="sms:{TEL}">Text us for a quote</a>''',
-      points=["Brand new parts", "Free shipping, lower 48", "Secure card checkout", "Real people in Socorro, NM"])}
-<section class="section" id="products">
+<section class="shop-head">
   <div class="wrap">
-    <div class="shop-bar">
-      <input type="search" id="shop-q" placeholder="Search parts, part numbers, vehicles" aria-label="Search parts">
-      <div class="shop-cats" id="shop-cats" role="group" aria-label="Filter by category"></div>
+    <h1>Shop Parts &amp; Wheels</h1>
+    <p>ATV wheels, beadlocks, truck, diesel and UTV parts. Every order checks out securely on eBay with free shipping to the lower 48.</p>
+  </div>
+</section>
+<section class="shop-section" id="products">
+  <div class="wrap shop-layout">
+    <aside class="shop-side" aria-label="Filters">
+      <div class="side-head">
+        <h2>Filters</h2>
+        <button type="button" class="side-close" id="filters-close" aria-label="Close filters">&times;</button>
+      </div>
+      <div class="facet"><h3>Category</h3><div id="f-category"></div></div>
+      <div class="facet"><h3>Vehicle make</h3><div id="f-makes"></div></div>
+      <div class="facet"><h3>Brand</h3><div id="f-brand"></div></div>
+      <div class="facet">
+        <h3>Price</h3>
+        <div class="price-row">
+          <input type="number" id="price-min" min="0" placeholder="Min" aria-label="Minimum price">
+          <span>to</span>
+          <input type="number" id="price-max" min="0" placeholder="Max" aria-label="Maximum price">
+          <button type="button" class="btn btn-sm" id="price-apply">Go</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-block side-done" id="filters-done">Show results</button>
+    </aside>
+    <div class="shop-main">
+      <div class="shop-toolbar">
+        <input type="search" id="shop-q" placeholder="Search by part, part number or vehicle" aria-label="Search products">
+        <button type="button" class="btn btn-sm btn-line filters-btn" id="filters-open">Filters <span class="filters-count" id="filters-count"></span></button>
+        <label class="sort-label">Sort
+          <select id="shop-sort">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: low to high</option>
+            <option value="price-desc">Price: high to low</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </label>
+      </div>
+      <div class="shop-chips" id="shop-chips"></div>
+      <p class="shop-count" id="shop-count">Loading products...</p>
+      <p class="shop-status" id="shop-status" hidden></p>
+      <div class="shop-grid" id="shop-grid"></div>
+      <nav class="shop-pager" id="shop-pager" aria-label="Pages"></nav>
     </div>
-    <p class="shop-status" id="shop-status">Loading parts...</p>
-    <div class="shop-grid" id="shop-grid"></div>
   </div>
 </section>
 <section class="section alt">
   <div class="wrap split">
     <div class="prose">
-      <h2>Need a custom quote?</h2>
-      <p>Shipping to Alaska, Hawaii or overseas, buying more than one, or looking for a part you don't see here? Call or text <a href="tel:{TEL}">{PHONE}</a> or email <a href="mailto:{EMAIL}">{EMAIL}</a> with the part and where it's going. We'll send you a secure payment link with your exact price and shipping.</p>
       <h2>How ordering works</h2>
       <ul class="checks">
-        <li><strong>Pay securely.</strong> Checkout is handled by Stripe. We never see your card number.</li>
-        <li><strong>We ship it.</strong> Most parts ship within 3 business days, free to the lower 48.</li>
+        <li><strong>Check out on eBay.</strong> Every product links to our eBay store, so you get eBay's secure checkout and Money Back Guarantee.</li>
+        <li><strong>Free shipping.</strong> Most orders ship within 3 business days, free to the lower 48.</li>
+        <li><strong>Need fitment help?</strong> Call or text <a href="tel:{TEL}">{PHONE}</a> and we'll make sure it fits before you buy.</li>
         <li><strong>Want it installed?</strong> Have it shipped to the shop and we'll install it.</li>
       </ul>
-      <p>You can also find us on eBay: <a href="{EBAY_STORE}" target="_blank" rel="noopener">see our eBay store</a>.</p>
+      <p><a href="{EBAY_STORE}" target="_blank" rel="noopener">Visit our eBay store</a></p>
     </div>
     {location_box()}
   </div>
 </section>
 <div hidden data-shop-src="{escape(source)}" data-tel="{TEL}" data-phone="{PHONE}"></div>
 <script src="/assets/shop.js?v={SHOP_JS_VERSION}" defer></script>"""
-    page("shop/index.html", "Shop Truck, Diesel & UTV Parts | NM UTV, Socorro NM",
-         "Buy truck, diesel, UTV and performance parts from NM UTV in Socorro, NM. Free shipping to the lower 48, secure card checkout, custom quotes for Alaska and Hawaii.",
+    page("shop/index.html", "Shop ATV Wheels, Truck & UTV Parts | NM UTV, Socorro NM",
+         "Shop ATV wheels, beadlocks, truck, diesel and UTV parts from NM UTV in Socorro, NM. Secure checkout on eBay with free shipping to the lower 48.",
          body, schemas=[business_schema(), breadcrumb_schema(crumbs)], priority="0.9")
 
 

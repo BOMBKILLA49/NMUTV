@@ -1064,7 +1064,10 @@ def build_tours():
 # Products load in the browser from this CSV. Paste the Google Sheet's
 # "Publish to web" CSV link here to manage products from the sheet; while it's
 # empty the shop reads assets/shop-products.csv from this repo.
-SHOP_SHEET_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ1Rr0-HOmYp_5tIrh469fIcqWeX8r2DsSiQ3UB-QWOhVuk-0Sr2O9d2mo5oUvufS1p7MhQ9Hpiss0/pub?output=csv"
+# Products now come from assets/shop-products.csv (eBay-linked) until the eBay sync replaces it.
+# The old sheet link, kept for reference:
+# https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ1Rr0-HOmYp_5tIrh469fIcqWeX8r2DsSiQ3UB-QWOhVuk-0Sr2O9d2mo5oUvufS1p7MhQ9Hpiss0/pub?output=csv
+SHOP_SHEET_CSV = ""
 
 # SHOP_LOCAL=1 python3 build/build.py  -> test against assets/shop-products.csv instead of the sheet
 source = "/assets/shop-products.csv" if os.environ.get("SHOP_LOCAL") else (SHOP_SHEET_CSV or "/assets/shop-products.csv")

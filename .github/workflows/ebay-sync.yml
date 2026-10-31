@@ -1,0 +1,45 @@
+  # Keeps /shop/ in step with the eBay store: reads active listings through the
+  # eBay Browse API and commits assets/shop-products.csv when anything changed.
+  name: eBay shop sync
+
+  on:
+    schedule:
+      - cron: "17 */6 * * *"   # every 6 hours
+    workflow_dispatch:          # "Run workflow" button on the Actions tab
+    push:
+      branches: [main]
+      paths:
+        - build/ebay_sync.py
+        - .github/workflows/ebay-sync.yml
+
+  permissions:
+    contents: write
+
+  concurrency:
+    group: ebay-sync
+    cancel-in-progress: false
+
+  jobs:
+    sync:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-python@v5
+          with:
+            python-version: "3.12"
+        - name: Pull listings from eBay
+          env:
+            EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+            EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          run: python3 build/ebay_sync.py
+        - name: Commit changes
+          run: |
+            if git diff --quiet -- assets/shop-products.csv; then
+              echo "Shop already up to date."
+              exit 0
+            fi
+            git config user.name "nmutv-ebay-sync"
+            git config user.email "actions@users.noreply.github.com"
+            git add assets/shop-products.csv
+            git commit -m "Sync shop from eBay"
+            git push

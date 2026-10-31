@@ -1,5 +1,5 @@
 /* NM UTV shop: a catalog of our eBay listings. Checkout happens on eBay.
-   Products come from a CSV (published Google Sheet for now; an eBay sync later).
+   Products come from assets/shop-products.csv, rewritten from eBay by build/ebay_sync.py.
    Columns: show, category, name, price, photo, photos, description, details, buy_link, sku
    - photos: extra photo links separated by |
    - details: longer text for the product page; blank lines start new paragraphs,
@@ -249,7 +249,7 @@
       document.title = it.name + " | NM UTV Shop";
       var crumb = document.getElementById("crumb-name"); if (crumb) crumb.textContent = it.name;
       var pics = photos(it), d = details(it.details);
-      var specs = [["Part number", it.sku], ["Category", it.category]].concat(d.specs);
+      var specs = [[/^\d{9,}$/.test(it.sku) ? "eBay item #" : "Part number", it.sku], ["Category", it.category]].concat(d.specs);
       var onEbay = /ebay\.com\//i.test(it.buy_link || "");
       box.innerHTML =
         '<div class="item-gallery">' +
